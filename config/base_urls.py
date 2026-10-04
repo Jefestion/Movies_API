@@ -1,0 +1,1 @@
+MOVIES_BASE_URL = "https://api.dev-cinescope.coconutqa.ru"
