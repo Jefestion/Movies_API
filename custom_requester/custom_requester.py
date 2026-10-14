@@ -23,7 +23,9 @@ class CustomRequester:
             self.log_request_and_response(response)
         if response.status_code != expected_status:
             raise ValueError(
-                f"Unexpected status code: {response.status_code}. Expected: {expected_status}"
+                f"Unexpected status code: {response.status_code}. "
+                f"Expected: {expected_status}. "
+                f"Response body: {response.text}"
             )
         return response
 
