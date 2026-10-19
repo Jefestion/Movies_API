@@ -48,6 +48,20 @@ def movies_params():
 
 
 @pytest.fixture(scope="function")
+def wrong_movies_params():
+    return {
+        "pageSize": 10,
+        "page": 1,
+        "minPrice": 500,
+        "maxPrice": 499,
+        "locations": "MSK",
+        "published": True,
+        "genreId": 7,
+        "createdAt": "asc"
+    }
+
+
+@pytest.fixture(scope="function")
 def new_movie():
     return {
         "name": ''.join(random.choices(string.ascii_letters, k=7)),
@@ -61,15 +75,43 @@ def new_movie():
 
 
 @pytest.fixture(scope="function")
-def created_movie(auth_session, new_movie, api_manager):
-    disposable_movie = api_manager.movies_api.create_movie(new_movie)
+def movie_empty_name():
+    return {
+        "name": "",
+        "imageUrl": f"https://image.url",
+        "price": 44,
+        "description": "Описание фильма",
+        "location": "SPB",
+        "published": True,
+        "genreId": 7
+    }
 
 
 @pytest.fixture(scope="function")
-def refactored_data():
+def created_movie(api_manager, new_movie):
+    response = api_manager.movies_api.create_movie(new_movie)
+    movie_id = response.json()["id"]
+
+    yield movie_id
+
+    api_manager.movies_api.delete_movie_by_id(movie_id)
+
+
+@pytest.fixture(scope="function")
+def updated_data():
     return {
         "name": 'forcibly renamed',
         "imageUrl": f"https://refactored.data",
         "price": 999,
         "description": "Описание фильма после PATCH"
     }
+
+
+@pytest.fixture(scope="function")
+def movie_cleanup(api_manager):
+    movie_ids = []
+
+    yield movie_ids
+
+    for movie_id in movie_ids:
+        api_manager.movies_api.delete_movie_by_id(movie_id)

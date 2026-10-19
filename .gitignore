@@ -1,4 +1,6 @@
 .venv/
 __pycache__/
 *.pyc
+
 config/admin_creds.py
+.idea/
